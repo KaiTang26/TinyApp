@@ -12,6 +12,7 @@
     <form action="/urls/<%= i%>/delete" method="POST" style="margin:10px;">
       <label><%= i %>-></label>
       <label><a href="<%= urls[i]%>"><%= urls[i] %></a></label>
+      <label><a href="http://localhost:<%=PORT %>/urls/<%=i%>">Edit</a></label>
       <button type="delete">Delete</button>
     </form>
     <%}%>

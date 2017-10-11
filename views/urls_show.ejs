@@ -4,7 +4,16 @@
   <% include ./partials/_head %>
 </head>
 <body>
-  <p> <a href="<%=link%>"><%=shortURL%></a> and <%=longURL%></p>
+
+  <h3>ShortURL: <%=shortURL%></h3>
+
+  <form action="/urls/<%=shortURL%>/updata" method="POST" style="margin:10px;">
+
+      <input id="longURL" type="text" name="longURL" placeholder="<%=longURL%>" style="width: 300px">
+      <button type="updata">Updata</button>
+  </form>
+
+
 
 </body>
 </html>

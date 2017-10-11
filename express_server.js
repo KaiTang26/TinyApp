@@ -17,7 +17,8 @@ app.set("view engine", "ejs");
 
 app.get("/urls", (req, res)=>{
 
-  let templateVars ={urls: urlDatabase};
+  let templateVars ={urls: urlDatabase,
+                    PORT: PORT};
   res.render("urls_index", templateVars);
 });
 
@@ -30,7 +31,7 @@ app.post("/urls", (req, res)=>{
   let shortUrl =generateRandomString();
   urlDatabase[shortUrl]=longUrl.longURL;
   console.log(urlDatabase);
-  res.redirect(`http://localhost:${PORT}/urls/${shortUrl}`);
+  res.redirect(`http://localhost:${PORT}/urls`);
 });
 
 function generateRandomString(){
@@ -56,6 +57,13 @@ app.get("/u/:shortURL", (req, res)=>{
 app.post("/urls/:id/delete", (req, res)=>{
   let a = delete urlDatabase[req.params.id]
   console.log(a);
+  res.redirect(`http://localhost:${PORT}/urls`);
+});
+
+app.post("/urls/:id/updata", (req, res)=>{
+  let longUrl=req.body;
+  urlDatabase[req.params.id]=longUrl.longURL;
+  console.log(urlDatabase);
   res.redirect(`http://localhost:${PORT}/urls`);
 });
 
