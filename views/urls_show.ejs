@@ -5,6 +5,10 @@
 </head>
 <body>
 
+  <header>
+      <% include ./partials/_header %>
+  </header>
+
   <h3>ShortURL: <%=shortURL%></h3>
 
   <form action="/urls/<%=shortURL%>/updata" method="POST" style="margin:10px;">

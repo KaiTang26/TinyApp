@@ -8,6 +8,10 @@
 </head>
 <body>
 
+  <header>
+      <% include ./partials/_header %>
+  </header>
+
     <% for(let i in urls){%>
     <form action="/urls/<%= i%>/delete" method="POST" style="margin:10px;">
       <label><%= i %>-></label>
