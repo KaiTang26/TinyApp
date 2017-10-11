@@ -7,10 +7,10 @@ const PORT = process.env.PORT || 8080;
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-let urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-  };
+// let urlDatabase = {
+//   "b2xVn2": "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com"
+//   };
 
 
 app.set("view engine", "ejs");
@@ -52,6 +52,18 @@ app.get("/u/:shortURL", (req, res)=>{
   let longURL = urlDatabase[req.params.shortURL]
   res.redirect(longURL);
 });
+
+app.post("/urls/:id/delete", (req, res)=>{
+  let a = delete urlDatabase[req.params.id]
+  console.log(a);
+  res.redirect(`http://localhost:${PORT}/urls`);
+});
+
+
+let urlDatabase = {
+  "b2xVn2": "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com"
+  };
 
 // make connection for server
 app.listen(PORT, ()=>{

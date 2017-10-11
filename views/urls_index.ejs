@@ -8,11 +8,13 @@
 </head>
 <body>
 
-  <ul>
     <% for(let i in urls){%>
-    <li><%= urls[i] %> -- <a href="<%=i%>"><%=i%></a></li>
+    <form action="/urls/<%= i%>/delete" method="POST" style="margin:10px;">
+      <label><%= i %>-></label>
+      <label><a href="<%= urls[i]%>"><%= urls[i] %></a></label>
+      <button type="delete">Delete</button>
+    </form>
     <%}%>
-  </ul>
 
 </body>
 </html>
