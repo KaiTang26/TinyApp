@@ -21,9 +21,6 @@ app.use(cookieParser())
 app.set("view engine", "ejs");
 
 app.get("/urls", (req, res)=>{
-
-  // console.log(req.cookies)
-
   let templateVars ={urls: urlDatabase,
                     PORT: PORT,
                     username: req.cookies["username"]};
@@ -89,11 +86,69 @@ app.post("/logout", (req, res)=>{
   res.redirect(`http://localhost:${PORT}/urls`);
   });
 
+app.get("/register", (req, res)=>{
+  let templateVars ={username: req.cookies["username"]};
+
+  res.render("get_register", templateVars);
+});
+
+app.post("/register", (req, res)=>{
+  let useID = generateUserID();
+  let Pw = req.body.password;
+  let Em = req.body.email;
+  let test = registionCheck(Pw,Em);
+  // console.log(test);
+  if(test===400){
+    res.sendStatus(test);
+  }else{
+    let newUer={id:useID,
+              email:Em,
+              password:Pw};
+    res.cookie("user_id", useID);
+    users[useID]=newUer;
+    res.redirect(`http://localhost:${PORT}/urls`);
+  }
+
+});
+
+function registionCheck(Pw,Em){
+
+  if(Pw && Em){
+    for(let key in users){
+      if(users[key].password===Pw){ return 400;}
+      if(users[key].email===Em){ return 400;}
+      return 200;
+    }
+  }else{
+    return 400;
+  }
+};
+
+function generateUserID(){
+  let result = '';
+  let chars ="0123456789";
+  for (var i = 3; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+  return result;
+}
+
 
 let urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
   };
+
+const users = {
+  "123": {
+    id: "123",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "345": {
+    id: "345",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
 
 // make connection for server
 app.listen(PORT, ()=>{
