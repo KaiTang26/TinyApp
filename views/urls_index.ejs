@@ -1,0 +1,18 @@
+<!-- uses to save the url  -->
+<!-- views/urls_index.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ./partials/_head %>
+</head>
+<body>
+
+  <ul>
+    <% for(let i in urls){%>
+    <li><%= urls[i] %> -- <a href="<%=i%>"><%=i%></a></li>
+    <%}%>
+  </ul>
+
+</body>
+</html>
