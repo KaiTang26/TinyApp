@@ -11,28 +11,26 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 
 
-
-// let username="Not Registered Yet!";
-
-// let urlDatabase = {
-//   "b2xVn2": "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com"
-//   };
-
-
 app.set("view engine", "ejs");
+
+app.get("/", (req, res)=>{
+  res.redirect(`http://localhost:${PORT}/login`)
+});
+
 
 app.get("/urls", (req, res)=>{
   let templateVars ={urls: urlDatabase,
-                    PORT: PORT};
+                     PORT: PORT};
   res.render("urls_index", templateVars);
 });
+
 
 app.get("/urls/new", (req,res)=>{
   // currentID =req.cookies["user_id"]
   let templateVars ={PORT:PORT};
   res.render("urls_new", templateVars)
 });
+
 
 app.post("/urls", (req, res)=>{
   let longUrl=req.body;
@@ -42,6 +40,7 @@ app.post("/urls", (req, res)=>{
   res.redirect(`http://localhost:${PORT}/urls`);
 });
 
+
 function generateRandomString(){
   let result = '';
   let chars ="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -49,10 +48,10 @@ function generateRandomString(){
   return result;
 }
 
+
 app.get("/urls/:id", (req, res)=>{
   let templaterVars ={shortURL: req.params.id,
                       longURL: urlDatabase[req.params.id],
-                      link: `http://localhost:${PORT}/u/${req.params.id}`,
                       PORT:PORT};
   res.render("urls_show", templaterVars);
 });
@@ -63,10 +62,12 @@ app.get("/u/:shortURL", (req, res)=>{
   res.redirect(longURL);
 });
 
+
 app.post("/urls/:id/delete", (req, res)=>{
   delete urlDatabase[req.params.id]
   res.redirect(`http://localhost:${PORT}/urls`);
 });
+
 
 app.post("/urls/:id/updata", (req, res)=>{
   let longUrl=req.body;
@@ -75,46 +76,46 @@ app.post("/urls/:id/updata", (req, res)=>{
   res.redirect(`http://localhost:${PORT}/urls`);
 });
 
+
 app.get("/login", (req, res)=>{
   let currentID = req.cookies["user_id"];
-
+  console.log(currentID);
   if(currentID){
     let templateVars ={PORT:PORT,
-                     user:users[currentID]};
+                       user:users[currentID]};
     res.render("login", templateVars);
   }else{
     let templateVars ={PORT:PORT,
-                     user:users["000"]};
+                       user:""};
     res.render("login", templateVars);
   }
-
 });
+
 
 app.post("/login", (req, res)=>{
   let Em=req.body.UserEmail;
   let Pw=req.body.UserPassword;
   let test = registionCheck(Pw,Em);
-
   if (test===40 || test===20) {
     res.sendStatus(403);
-
   }else{
     res.cookie("user_id", test);
     res.redirect(`http://localhost:${PORT}/urls`);
   }
-
 });
 
-app.post("/logout", (req, res)=>{
 
+app.post("/logout", (req, res)=>{
   res.clearCookie("user_id");
   res.redirect(`http://localhost:${PORT}/login`);
   });
+
 
 app.get("/register", (req, res)=>{
   let templateVars ={PORT:PORT};
   res.render("get_register", templateVars);
 });
+
 
 app.post("/register", (req, res)=>{
   let useID = generateUserID();
@@ -133,22 +134,17 @@ app.post("/register", (req, res)=>{
     res.redirect(`http://localhost:${PORT}/urls`);
   }
   console.log(users);
-
 });
 
+
 function registionCheck(Pw,Em){
-
-
   if(!(Pw && Em)){ return 40; }
-
   if(Pw && Em){
     for(let key in users){
       if(users[key].password===Pw && users[key].email===Em){ return key;}
     }
   }
-
   return 20;
-
 };
 
 
@@ -165,13 +161,8 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
   };
 
-const users = {
-  "000": {
-    id: "000",
-    email: "",
-    password: ""
-  },
 
+const users = {
   "123": {
     id: "123",
     email: "user@example.com",
