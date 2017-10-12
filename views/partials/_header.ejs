@@ -1,20 +1,5 @@
 
-<!-- this is head  -->
-<% if(username){%>
-
-<form action="/logout" method="POST" style="margin:10px;">
-  <label>Current User: <%= username %></label>
-  <input type="submit" value="Logout">
-</form>
-
-<%} else{%>
-
-<form action="/login" method="POST" style="margin:10px;">
-  <label for="username">UserName:</label>
-      <input id="username" type="text" name="username" placeholder="Please input username" style="width: 300px">
-      <input type="submit" value="Submit">
-</form>
-
-<%}%>
+<!-- this is header  -->
+<a href="http://localhost:<%= PORT %>/register">Register</a>  <a href="http://localhost:<%= PORT %>/login">Login/Logout</a>
 
 

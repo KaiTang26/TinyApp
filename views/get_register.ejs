@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ./partials/_head %>
+</head>
+<body>
+  <header>
+      <% include ./partials/_header %>
+  </header>
+
+  <form action="/register" method="POST" style="margin:150px;">
+      <label for="register form">Registration Form:</label>
+
+      <input type="email" name="email" placeholder="something@something.com" style="width: 150px">
+
+      <input type="password" name="password"  style="width: 150px">
+      <input type="submit" value="Create an Account">
+    </form>
+
+
+
+</body>
+</html>
