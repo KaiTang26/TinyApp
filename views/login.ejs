@@ -1,0 +1,42 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ./partials/_head %>
+</head>
+<body style="font-size:20px; padding:50px;">
+
+  <header>
+      <% include ./partials/_header %>
+  </header>
+
+
+
+  <% if(user){%>
+
+<h1>See You Soon!</h1>
+
+<form action="/logout" method="POST" style="margin:10px;">
+  <label>Current User Email: <%= user["email"] %></label>
+  <input type="submit" value="Logout">
+</form>
+
+<%} else{%>
+
+<h1>Welcome To TinyApp</h1>
+  <h2>If you have registered, please login.</h2>
+
+  <form action="/login" method="POST" style="margin:10px;">
+  <label for="username">Login:</label>
+      <input id="UserEmail" type="text" name="UserEmail" placeholder="Please input UserEmail" style="width: 300px">
+      <input id="UserPassword" type="password" name="UserPassword" placeholder="Please input UserPassword" style="width: 300px">
+      <input type="submit" value="Submit">
+</form>
+
+  <h5>If you don't have an account, please register first.</h5>
+
+<%}%>
+
+  </body>
+</html>
