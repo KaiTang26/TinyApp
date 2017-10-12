@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 8080;
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 
+
+
 // let username="Not Registered Yet!";
 
 // let urlDatabase = {
@@ -22,13 +24,13 @@ app.set("view engine", "ejs");
 
 app.get("/urls", (req, res)=>{
   let templateVars ={urls: urlDatabase,
-                    PORT: PORT,
-                    username: req.cookies["username"]};
+                    PORT: PORT};
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req,res)=>{
-  let templateVars ={username: req.cookies["username"]};
+  // currentID =req.cookies["user_id"]
+  let templateVars ={PORT:PORT};
   res.render("urls_new", templateVars)
 });
 
@@ -51,7 +53,7 @@ app.get("/urls/:id", (req, res)=>{
   let templaterVars ={shortURL: req.params.id,
                       longURL: urlDatabase[req.params.id],
                       link: `http://localhost:${PORT}/u/${req.params.id}`,
-                      username: req.cookies["username"]};
+                      PORT:PORT};
   res.render("urls_show", templaterVars);
 });
 
@@ -73,22 +75,53 @@ app.post("/urls/:id/updata", (req, res)=>{
   res.redirect(`http://localhost:${PORT}/urls`);
 });
 
+app.get("/login", (req, res)=>{
+  let currentID = req.cookies["user_id"];
+
+  if(currentID){
+    let templateVars ={PORT:PORT,
+                     user:users[currentID]};
+    res.render("login", templateVars);
+  }else{
+    let templateVars ={PORT:PORT,
+                     user:users["000"]};
+    res.render("login", templateVars);
+  }
+
+});
+
 app.post("/login", (req, res)=>{
-  let username=req.body.username;
-  console.log(username);
-  res.cookie("username", username);
-  res.redirect(`http://localhost:${PORT}/urls`);
-  });
+  let Em=req.body.UserEmail;
+  let Pw=req.body.UserPassword;
+
+  console.log(Em, Pw)
+
+  if(Pw && Em){
+    for(let key in users){
+      console.log(users[key].password);
+      console.log((users[key].password===Pw) && (users[key].email===Em));
+      if((users[key].password===Pw) && (users[key].email===Em)){
+
+        res.cookie("user_id", key);
+
+        res.redirect(`http://localhost:${PORT}/urls`);
+
+      }else{ res.sendStatus(403); }
+    }
+  }else{
+    res.sendStatus(403);
+  }
+
+});
 
 app.post("/logout", (req, res)=>{
 
-  res.clearCookie("username");
-  res.redirect(`http://localhost:${PORT}/urls`);
+  res.clearCookie("user_id");
+  res.redirect(`http://localhost:${PORT}/login`);
   });
 
 app.get("/register", (req, res)=>{
-  let templateVars ={username: req.cookies["username"]};
-
+  let templateVars ={PORT:PORT};
   res.render("get_register", templateVars);
 });
 
@@ -124,6 +157,22 @@ function registionCheck(Pw,Em){
   }
 };
 
+// function loginCheck(Pw,Em){
+
+//   if(Pw && Em){
+//     for(let key in users){
+//       if(users[key].password===Pw && users[key].email===Em){
+
+//         res.cookie("user_id", key);
+
+//         return 200;
+//       }else{ return 403 }
+//     }
+//   }else{
+//     return 403;
+//   }
+// };
+
 function generateUserID(){
   let result = '';
   let chars ="0123456789";
@@ -138,6 +187,12 @@ let urlDatabase = {
   };
 
 const users = {
+  "000": {
+    id: "000",
+    email: "",
+    password: ""
+  },
+
   "123": {
     id: "123",
     email: "user@example.com",

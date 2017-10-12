@@ -1,0 +1,37 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ./partials/_head %>
+</head>
+<body style="font-size:20px; padding:50px;">
+
+  <header>
+      <% include ./partials/_header %>
+  </header>
+
+  <% if(user["password"]){%>
+
+<form action="/logout" method="POST" style="margin:10px;">
+  <label>Current User Email: <%= user["email"] %></label>
+  <input type="submit" value="Logout">
+</form>
+
+<%} else{%>
+
+<form action="/login" method="POST" style="margin:10px;">
+  <label for="username">Login:</label>
+      <input id="UserEmail" type="text" name="UserEmail" placeholder="Please input UserEmail" style="width: 300px">
+      <input id="UserPassword" type="text" name="UserPassword" placeholder="Please input UserPassword" style="width: 300px">
+      <input type="submit" value="Submit">
+</form>
+
+<%}%>
+
+
+
+
+
+  </body>
+</html>
