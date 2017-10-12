@@ -93,23 +93,14 @@ app.get("/login", (req, res)=>{
 app.post("/login", (req, res)=>{
   let Em=req.body.UserEmail;
   let Pw=req.body.UserPassword;
+  let test = registionCheck(Pw,Em);
 
-  console.log(Em, Pw)
-
-  if(Pw && Em){
-    for(let key in users){
-      console.log(users[key].password);
-      console.log((users[key].password===Pw) && (users[key].email===Em));
-      if((users[key].password===Pw) && (users[key].email===Em)){
-
-        res.cookie("user_id", key);
-
-        res.redirect(`http://localhost:${PORT}/urls`);
-
-      }else{ res.sendStatus(403); }
-    }
-  }else{
+  if (test===40 || test===20) {
     res.sendStatus(403);
+
+  }else{
+    res.cookie("user_id", test);
+    res.redirect(`http://localhost:${PORT}/urls`);
   }
 
 });
@@ -131,8 +122,8 @@ app.post("/register", (req, res)=>{
   let Em = req.body.email;
   let test = registionCheck(Pw,Em);
   // console.log(test);
-  if(test===400){
-    res.sendStatus(test);
+  if(test!==20){
+    res.sendStatus(400);
   }else{
     let newUer={id:useID,
               email:Em,
@@ -141,37 +132,25 @@ app.post("/register", (req, res)=>{
     users[useID]=newUer;
     res.redirect(`http://localhost:${PORT}/urls`);
   }
+  console.log(users);
 
 });
 
 function registionCheck(Pw,Em){
 
+
+  if(!(Pw && Em)){ return 40; }
+
   if(Pw && Em){
     for(let key in users){
-      if(users[key].password===Pw){ return 400;}
-      if(users[key].email===Em){ return 400;}
-      return 200;
+      if(users[key].password===Pw && users[key].email===Em){ return key;}
     }
-  }else{
-    return 400;
   }
+
+  return 20;
+
 };
 
-// function loginCheck(Pw,Em){
-
-//   if(Pw && Em){
-//     for(let key in users){
-//       if(users[key].password===Pw && users[key].email===Em){
-
-//         res.cookie("user_id", key);
-
-//         return 200;
-//       }else{ return 403 }
-//     }
-//   }else{
-//     return 403;
-//   }
-// };
 
 function generateUserID(){
   let result = '';
