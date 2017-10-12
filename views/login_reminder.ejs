@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ./partials/_head %>
+</head>
+<body>
+
+  <%if(StatusCode===403){ %>
+
+    <h2>No cheating please!</h2>
+
+
+  <%}else{ %>
+
+    <h2>Hey Man!! You don't login yet! Please login first <b>OR</b> Register for free!!!</h2>
+
+    <h4> <% include ./partials/_header %> </h4>
+
+  <% }%>
+
+</body>
+</html>

@@ -12,14 +12,18 @@
       <% include ./partials/_header %>
   </header>
 
-    <% for(let i in urls){%>
+  <h1>My Account</h1>
+
+    <% for(let i in urls[ID]){%>
     <form action="/urls/<%= i%>/delete" method="POST" style="margin:10px;">
       <label><%= i %>-></label>
-      <label><a href="<%= urls[i]%>"><%= urls[i] %></a></label>
+      <label><a href="<%= urls[i]%>"><%= urls[ID][i] %></a></label>
       <label><a href="http://localhost:<%=PORT %>/urls/<%=i%>">Edit</a></label>
       <button type="delete">Delete</button>
     </form>
     <%}%>
+
+    <a href="http://localhost:<%=PORT %>/urls/new">Add new short URLs</a>
 
 </body>
 </html>

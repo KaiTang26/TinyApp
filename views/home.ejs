@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ./partials/_head %>
+</head>
+<body>
+
+  <header>
+      <% include ./partials/_header %>
+  </header>
+<ul>
+    <% for(let key in urls){%>
+
+        <% for(let i in urls[key]){%>
+
+          <li><%= i%>--><a href="<%= urls[key][i]%>"><%= urls[key][i] %></a></li>
+
+        <%}%>
+
+    <%}%>
+
+    <a href="http://localhost:<%=PORT %>/register">Register and create your own short URLs</a>
+</ul>
+
+</body>
+</html>
