@@ -1,6 +1,8 @@
 const express =require("express");
 const bodyParser =require("body-parser");
 const cookieParser =require("cookie-parser");
+const cookieSession = require('cookie-session')
+const bcrypt = require('bcrypt');
 const app = express();
 
 require("dotenv").config();
@@ -105,10 +107,6 @@ function urlCheck(ID, par){
   return false;
 };
 
-// app.get("/u/:shortURL", (req, res)=>{
-//   let longURL = urlDatabase[req.params.shortURL]
-//   res.redirect(longURL);
-// });
 
 
 app.post("/urls/:id/delete", (req, res)=>{
@@ -147,14 +145,23 @@ app.get("/login", (req, res)=>{
 
 app.post("/login", (req, res)=>{
   let Em=req.body.UserEmail;
-  let Pw=req.body.UserPassword;
-  let test = registionCheck(Pw,Em);
-  if (test===40 || test===20) {
-    res.sendStatus(403);
-  }else{
-    res.cookie("user_id", test);
-    res.redirect(`http://localhost:${PORT}/urls`);
+  let Pw =req.body.UserPassword;
+  console.log(Pw);
+
+  for(let key in users){
+    if(users[key].email===Em){
+      console.log(users[key].password);
+      console.log(Pw);
+      if(bcrypt.compareSync(Pw,users[key].password)){
+        res.cookie("user_id", key);
+        res.redirect(`http://localhost:${PORT}/urls`);
+        return;
+      }
+    }
   }
+
+  res.sendStatus(403);
+
 });
 
 
@@ -176,29 +183,29 @@ app.post("/register", (req, res)=>{
   let Em = req.body.email;
   let test = registionCheck(Pw,Em);
   // console.log(test);
-  if(test!==20){
+  if(test!==200){
     res.sendStatus(400);
   }else{
     let newUer={id:useID,
               email:Em,
-              password:Pw};
+              password:bcrypt.hashSync(Pw,10)};
     res.cookie("user_id", useID);
     users[useID]=newUer;
     console.log(users);
     res.redirect(`http://localhost:${PORT}/urls`);
   }
-  console.log(users);
+  // console.log(users);
 });
 
 
 function registionCheck(Pw,Em){
-  if(!(Pw && Em)){ return 40; }
+  if(!(Pw && Em)){ return 400; }
   if(Pw && Em){
     for(let key in users){
-      if(users[key].password===Pw && users[key].email===Em){ return key;}
+      if(users[key].email===Em){ return 400;}
     }
   }
-  return 20;
+  return 200;
 };
 
 
@@ -220,7 +227,7 @@ const users = {
   "123": {
     id: "123",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: "$2a$10$qYExkuicKUP3.Q.R615tSedMCTu1M8MY0vl.zofu4a5cLqNVNgqb6"
   },
  "345": {
     id: "345",
@@ -228,6 +235,9 @@ const users = {
     password: "dishwasher-funk"
   }
 }
+
+// console.log(bcrypt.hashSync("purple-monkey-dinosaur",10));
+
 
 // make connection for server
 app.listen(PORT, ()=>{
