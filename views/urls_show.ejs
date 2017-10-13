@@ -1,3 +1,4 @@
+<!-- views/urls_show.ejs -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +12,7 @@
 
   <h3>ShortURL: <%=shortURL%></h3>
 
-  <form action="/urls/<%=shortURL%>/updata" method="POST" style="margin:10px;">
+  <form action="/urls/<%=shortURL%>/update" method="POST" style="margin:10px;">
 
       <input id="longURL" type="text" name="longURL" placeholder="<%=longURL%>" style="width: 300px">
       <button type="updata">Update</button>
