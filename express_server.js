@@ -1,6 +1,6 @@
 const express =require("express");
 const bodyParser =require("body-parser");
-const cookieParser =require("cookie-parser");
+// const cookieParser =require("cookie-parser");
 const cookieSession = require('cookie-session')
 const bcrypt = require('bcrypt');
 const app = express();
@@ -10,7 +10,12 @@ require("dotenv").config();
 const PORT = process.env.PORT || 8080;
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser())
+// app.use(cookieParser())
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ["user_id"]
+}));
 
 
 app.set("view engine", "ejs");
@@ -23,7 +28,7 @@ app.get("/", (req, res)=>{
 
 
 app.get("/urls", (req, res)=>{
-  let ID =req.cookies["user_id"];
+  let ID =req.session.user_id;
   if(ID){
     let templateVars ={urls: urlDatabase,
                          ID:ID,
@@ -39,7 +44,7 @@ app.get("/urls", (req, res)=>{
 
 app.get("/urls/new", (req,res)=>{
 
-  if(req.cookies["user_id"]){
+  if(req.session.user_id){
     let templateVars ={PORT:PORT};
     res.render("urls_new", templateVars)
   }else{
@@ -51,7 +56,7 @@ app.get("/urls/new", (req,res)=>{
 
 
 app.post("/urls", (req, res)=>{
-  let ID =req.cookies["user_id"];
+  let ID =req.session.user_id;
   console.log(ID);
   let longUrl=req.body.longURL;
   let shortUrl =generateRandomString();
@@ -74,7 +79,7 @@ function generateRandomString(){
 
 
 app.get("/urls/:id", (req, res)=>{
-  let ID =req.cookies["user_id"];
+  let ID =req.session.user_id;
   let par = req.params.id;
   let test =urlCheck(ID, par);
 
@@ -110,14 +115,14 @@ function urlCheck(ID, par){
 
 
 app.post("/urls/:id/delete", (req, res)=>{
-  let ID =req.cookies["user_id"];
+  let ID =req.session.user_id;
   delete urlDatabase[ID][req.params.id]
   res.redirect(`http://localhost:${PORT}/urls`);
 });
 
 
 app.post("/urls/:id/updata", (req, res)=>{
-  let ID =req.cookies["user_id"];
+  let ID =req.session.user_id;
   let longUrl=req.body;
   urlDatabase[ID][req.params.id]=longUrl.longURL;
   console.log(urlDatabase);
@@ -126,7 +131,7 @@ app.post("/urls/:id/updata", (req, res)=>{
 
 
 app.get("/login", (req, res)=>{
-  let currentID = req.cookies["user_id"];
+  let currentID = req.session.user_id;
 
   if(currentID){
     console.log(users[currentID]);
@@ -153,7 +158,8 @@ app.post("/login", (req, res)=>{
       console.log(users[key].password);
       console.log(Pw);
       if(bcrypt.compareSync(Pw,users[key].password)){
-        res.cookie("user_id", key);
+        req.session.user_id=key;
+        // res.cookie("user_id", key);
         res.redirect(`http://localhost:${PORT}/urls`);
         return;
       }
@@ -166,7 +172,8 @@ app.post("/login", (req, res)=>{
 
 
 app.post("/logout", (req, res)=>{
-  res.clearCookie("user_id");
+  req.session = null;
+  // res.clearCookie("user_id");
   res.redirect(`http://localhost:${PORT}/login`);
   });
 
@@ -189,7 +196,8 @@ app.post("/register", (req, res)=>{
     let newUer={id:useID,
               email:Em,
               password:bcrypt.hashSync(Pw,10)};
-    res.cookie("user_id", useID);
+    req.session.user_id=useID;
+    // res.cookie("user_id", useID);
     users[useID]=newUer;
     console.log(users);
     res.redirect(`http://localhost:${PORT}/urls`);
