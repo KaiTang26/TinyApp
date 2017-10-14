@@ -102,7 +102,7 @@ app.get("/urls/:surl", (req, res)=>{
 
   if(test){
     let templaterVars ={
-      shortURL: req.params.id,
+      shortURL: sUrl,
       longURL: urlDatabase[userID][sUrl],
       PORT:PORT
     };
